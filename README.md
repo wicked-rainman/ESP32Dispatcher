@@ -16,24 +16,27 @@ how much time the function should be given to execute. These times are specified
 startup code. For example:
 
 ```
-    #include <Dispatch.h>
-    Dispatch myjobs;                       //Create a dispatch instance
-    void setup() {
-      Serial.begin(115200);               //Set up the serial port Etc
-      myjobs.add(Function1, 2000,5);     //Add Function1 to the list. Run every 2 seconds, expire after 5Ms
-      myjobs.add(Function2, 5000,1000);   //Add Function2 to the list. Run every 5 seconds, expire after 1 second
-      myjobs.add(Function3, 120000,0);    //Add Function3 to the list. Run after 2 minutes, no expiry time. 
-    }
+#include <Dispatch.h>
+Dispatch myjobs;                       //Create a dispatch instance
+void setup() {
+  Serial.begin(115200);               //Set up the serial port Etc
+  myjobs.add(Function1, 2000,5);      //Add Function1 to the list. 
+                                      //Run every 2 seconds, expire after 5Ms
+  myjobs.add(Function2, 5000,1000);   //Add Function2 to the list. 
+                                      //Run every 5 seconds, expire after 1 second
+  myjobs.add(Function3, 120000,0);    //Add Function3 to the list. 
+                                      //Run after 2 minutes, no expiry time. 
+ }
 
 ```
 
 + The dispatcher recurse through this link list to evaluate how long each function has been waiting and invokes any function that has an expired wait time. If more than one function is in this expired state, the function that has incurred the longest delay will be executed first. In an Arduino'esq environment, you would typically place the dispatcher call inside the main loop funciton so it get's it's cpu cycles along with whatever other function calls are made within the loop.
 
 ```
-    void loop() {
-        myjobs.run();                     //Get the dispatcher to run through the link list
+void loop() {
+    myjobs.run();                     //Get the dispatcher to run through the link list
         ....                              //Do whatever other tasks....
-    }
+}
 ```
 
 + Within each dispatched function, make calls at suitable points to the dispatch expire method (If you don't do this, then the dispatcher will let the function run to completion). If the lapse time is exceeded then the method returns a boolean which can be actioned on. In the main loop above, some examples are:
