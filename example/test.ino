@@ -4,58 +4,43 @@
 // Author: WR
 //==========================================================
 
-#include <M5Station.h>
 #include <Dispatch.h>
+Dispatch myjobs;  //Create a dispatch instance
 
-Dispatch jobs;
 void setup() {
-  
-  //Enable and start up the serial port
-  //Add two simple jobs to the dispatcher link list
-  M5.begin(true,true,true);
-  Serial.begin(115200);
-  jobs.add(Counter,15000,20); //Run "Counter" function every 15 seconds. Expire in 20 milliseconds.
-  jobs.add(DitchMe,30000,100);//Run "Ditchme" function after 30 seconds. Expire in 200 milliseconds and only runs once
-  jobs.add(Overtime,5000,0);  //Run "Overtime" function every 5 seconds. No expire time.
+  Serial.begin(115200);               //Set up the serial port Etc
+  myjobs.add(Function1, 2000, 5);   //Add Function1 to the list. Run every 2 seconds, expire after 5Ms
+  myjobs.add(Function2, 5000, 1000);  //Add Function2 to the list. Run every 5 seconds, expire after 1 second
+  myjobs.add(Function3, 120000, 0);   //Add Function3 to the list. Run after 2 minutes, no expiry time.
 }
-
 void loop() {
-  //Run the jobs in the dispatcher queue. 
-  jobs.run();
+  myjobs.run();
 }
-//---------------------------------------------------------
-// Function Counter
-// Loop from 1 to 10000000, displaying the count.
-// The loop is never allowed to complete because it runs out of time.
-// Function will be re-launched every 15 seconds (or there abouts)
-//----------------------------------------------------------
-void Counter() {
-  int k;
-  Serial.println("Counter: Will I ever get to 100000000 ?");
-  for(k=0;k<100000000;k++) {
-    Serial.printf(" %d",k);
-    if(jobs.expired()) {
-      Serial.printf("\nCounter out of time after %lu milliseconds\n",jobs.runtime());
+void Function1() {
+  for (int k = 0; k < 5000000; k++) {
+    Serial.printf("%d ", k);
+    if (myjobs.expired()) {
+      Serial.printf("\nFunction1 expired\n");
       return;
-    }
+      }
   }
 }
-//---------------------------------------------------------
-// Function DitchMe
-// Runs after a 30 second delay.
-// Shows how long the function was delayed by, writes a message
-// and then gets removed from the dispatcher queue. Function
-// will therefore only run once.
-//-------------------------------------------------------
-void DitchMe() {
-  Serial.printf("Ditchme was delayed by %luMs\n",jobs.delaytime());
-  Serial.println("Hello. After waiting 30 seconds, this is the last you'll see of me as I'll be deleted.");
-  jobs.remove(DitchMe);
+void Function2() {
+  for (int k = 0; k < 5000; k++) {
+    if (myjobs.expired()) return;
+    int x = k;
+  }
+  Serial.printf("In function 2. Ran after a %luMs delay. Took %luMs to complete\n",
+                myjobs.delaytime(), myjobs.runtime());
 }
-//-------------------------------------------------------
-// Function Overtime
-// Runs once every 5 seonds. Displays a message
-//--------------------------------------------------------
-void Overtime() {
-    Serial.printf("I'll run once every 5 seconds or there abouts, (delayed by %luMs)\n", jobs.delaytime());
+
+void Function3() {
+  int k;
+  for (k = 0; k < 5; k++) {
+    Serial.println("Hello");
+  }
+  if (k > 2) {
+    myjobs.remove(Function3);
+    Serial.println("Function3 had run and will never be seen again");
+  }
 }
