@@ -137,7 +137,7 @@ void Dispatch::run() {
 // Purpose:	The test function to decide if the currently function has
 // 		exhausted it's execution time.
 //
-// Return value: True of False
+// Return value: Boolean True of False
 //
 // ---------------------------------------------------------------------------
 
@@ -146,10 +146,28 @@ bool Dispatch::expired() {
   return false;
 }
 
+// ---------------------------------------------------------------------------
+//
+// Dispatch runtime
+//
+// Purpose: To return how long a function has been running
+//
+// Return value: Run time in milliseconds (Unsigned long int)
+//
+// ---------------------------------------------------------------------------
 unsigned long  Dispatch::runtime() {
 	return(millis()-_GlobalStartTime_);
 }	
 
+// ---------------------------------------------------------------------------
+//
+// Dispatch delaytime
+//
+// Purpose: To return how long a function's execution was delayed
+//
+// Return value: Delay time in milliseconds (Unsigned long int)
+//
+// ---------------------------------------------------------------------------
 unsigned long Dispatch::delaytime() {
 	return(_GlobalOverrunTime_);
 }
