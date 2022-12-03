@@ -1,13 +1,21 @@
-#include <Dispatch.h>
+//-----------------------------------------------------------
+// Simple Arduino sketch to show how the dispatcher library
+// can be used.
+// Author: WR
+//==========================================================
+
 #include <M5Station.h>
+#include <Dispatch.h>
+
 Dispatch jobs;
 void setup() {
+  
   //Enable and start up the serial port
   //Add two simple jobs to the dispatcher link list
   M5.begin(true,true,true);
   Serial.begin(115200);
   jobs.add(Counter,15000,20); //Run "Counter" function every 15 seconds. Expire in 20 milliseconds.
-  jobs.add(DitchMe,30000,100);//Run "Ditchme" function after 30 seconds. Expire in 200 milliseconds.
+  jobs.add(DitchMe,30000,100);//Run "Ditchme" function after 30 seconds. Expire in 200 milliseconds and only runs once
   jobs.add(Overtime,5000,0);  //Run "Overtime" function every 5 seconds. No expire time.
 }
 
