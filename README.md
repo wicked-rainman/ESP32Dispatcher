@@ -34,29 +34,38 @@ If more than one function has expired, the function that has incurred the longes
     }
 ```
 
-+ Within each dispatched function, make calls at suitable points to test expiry time. If the time has been exceeded then return.
++ Within each dispatched function, make calls at suitable points to test expiry time. If the time has been exceeded then return. In the main loop above, examples are:
 
-**Function1** runs every 2 seconds. Always executes for too long, so returns after 100 milliseconds.
+**Function1** - Runs every 2 seconds. Always executes for too long, so returns after 100 milliseconds.
 
-```
-    void Function1() {
-      for(int k=0;k<5000000;k++) {
-        Serial.printf("The value for K is %d\n",k);
-        if(myjobs.expire()) return;
-      }
-    }
-```
+        ```
+            void Function1() {
+                for(int k=0;k<5000000;k++) {
+                    Serial.printf("The value for K is %d\n",k);
+                    if(myjobs.expire()) return;
+                }
+            }
+        ```
 
-**Function2** runs every 5 seconds. Never expires because it runs too quickly. Displays how much time it's used and any execution delay
+**Function2**  - Runs every 5 seconds. Never expires because it runs too quickly. Displays how much time it's used and any execution delay
 
 ```
     void Function2() {
-      for(int k=0;k<5000;k++) {
+      for(int k=0;k<500;k++) {
+        if(myjobs.expire()) return;
         int x=k;
       }
         Serial.printf("In function 2. Ran after a %lu delay. Took %lu to complete\n", 
                                                 myjobs.delaytime(), myjobs.runtime());
     }
 ```
-**Funciton3**
+**Funciton3** - Runs after 2 minutes then removes itself from the task list
 
+```
+    void Function3() {
+        for(int k=0;k<5;k++) {
+            Serial.println("Hello");
+        }
+        if(k>2) myjobs.remove(Function3);
+    }
+```
