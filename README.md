@@ -7,7 +7,7 @@ something that is reliable. I guess for me, much of the time RTOS is overkill fo
 objectives are to read sensors, update some sort of display and maybe read serial data Etc. The problem is, sometimes these tasks block or 
 take an unpredictable length of time to complete. This induces delays with every other action I want to perform and for me, that's often unacceptable.
 
-This simple task dispatcher satisfies these requirements in a simplistic way. You define when you want a process to run. If such a task is slow and non re-entrant, then nothing will really help. But, what this dispatcher can do is aid with the catchup process. Tardy tasks can be picked up and dealt with as soon as any blocking process relinquishes control. It effectively flattens the delays on calling other functions. Taking this approach removes many of the reasons for calling delay() - which we all know, effectively blocks out the processor's ability to do anything else. 
+This task dispatcher satisfies these requirements in a simplistic way. You define when you want a process to run. If such a task is slow and non re-entrant, then nothing will really help. But, what this dispatcher can do is aid with the catchup process. Tardy tasks can be picked up and dealt with as soon as any blocking process relinquishes control. It effectively flattens the delays on calling other functions. Taking this approach removes many of the reasons for calling delay() - which we all know, effectively blocks out the processor's ability to do anything else. 
 
 ### Method:
 
