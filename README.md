@@ -1,13 +1,15 @@
-# ESP32Dispatcher
+# ESP32 Dispatcher
 ## A simple time slice scheduler for ESPs, Arduinos and the like.
 
 I've had a stab at writing code using RTOS with some success, but every now and then bugs turn up in what I've written and I 
 struggle to resolve where the issues are. I've read much of the RTOS documentation but there seems to be some magic involved in building
-something that is reliable. I guess for me, much of the time RTOS is overkill for what I'm trying to achieve. On the most part, my 
+something that is robust. I guess for me, much of the time RTOS is overkill for what I'm trying to achieve. On the most part, my 
 objectives are to read sensors, update some sort of display and maybe read serial data Etc. The problem is, sometimes these tasks block or 
 take an unpredictable length of time to complete. This induces delays with every other action I want to perform and for me, that's often unacceptable.
 
-This task dispatcher satisfies these requirements in a simplistic way. You define when you want a process to run. If such a task is slow and non re-entrant, then nothing will really help. But, what this dispatcher can do is aid with the catchup process. Tardy tasks can be picked up and dealt with as soon as any blocking process relinquishes control. It effectively flattens the delays on calling other functions. Taking this approach removes many of the reasons for calling delay() - which we all know, effectively blocks out the processor's ability to do anything else. 
+This task dispatcher satisfies these objectives in a simplistic way. You define when you want a process to run and (optionally) end. If any one task is slow and non re-entrant, then nothing will really help. What this dispatcher will do is aid with any catching up process. Tardy tasks can be picked up and dealt with as soon as any blocking process relinquishes control. It effectively flattens the delays on calling other functions and helps provide a more smooth process flow. Taking this approach removes many of the reasons for calling delay() - which we all know, effectively blocks out the processor's ability to do anything else. 
+
+There are pleanty of other "dispatcher" offerings around, but they all seem fairly complicated to use. Although this isn't as feature rich as some, it's simplistic approach may be more suitable in a domestic development scenario.
 
 ### Method:
 
@@ -29,7 +31,7 @@ void setup() {
 
 ```
 
-+ The dispatcher recurses through this link list using its ___run___ method to evaluate how long each function has been waiting. Any function that has an expired wait time will be executed. If more than one function is in this state, the one thats incurred the longest delay will be executed first (This approach provides the delay leveling up). In an Arduino'esq environment, you would typically place this call inside the sketch main loop so it get's it's cpu cycles along with whatever other calls are being made.
++ The dispatcher recurses through this link list when you invoke its ___run___ method, evaluating how long each function has been waiting. Any function that has an expired wait time will be executed. If more than one function is in this state, the one thats incurred the longest delay will be executed first (This approach provides the delay leveling up). In an Arduino'esq environment, you would typically place this call inside the sketch main loop so it get's it's cpu cycles along with whatever other calls are being made.
 
 ```
 void loop() {
@@ -39,9 +41,9 @@ void loop() {
 
 ```
 
-+ Within each dispatched function, calls should be made at suitable points to the dispatch ___expire___ method (If you don't do this, then the dispatcher will let the function run to completion). If the lapse time has been exceeded then this method returns a boolean which can be tested and actioned on. Using the main loop as shown above, some simple examples are:
++ Within each dispatched function, calls can be made at suitable points to the dispatch ___expire___ method (If you don't do this, then the dispatcher will let the function run to completion). If the specified lapse time has been exceeded then this method returns a boolean which can be tested and actioned on. Using the main loop as shown above, some simple examples are:
 
-+ **Function1** - Runs every 2 seconds. The for loop will always execute for more than 5 milliseconds, so the call to ___myjobs.expire()___ will return true after 5 milliseconds. In this instance, Function1 will return to the dispatcher. Two seconds later, Function1 will be executed again.
++ **Function1** - Runs every 2 seconds. The for{} loop will always execute for more than 5 milliseconds, so the call to ___myjobs.expire()___ will return true after 5 milliseconds. In this instance, Function1 will return to the dispatcher. Two seconds later, Function1 will be executed again.
 
 ```
             void Function1() {
@@ -55,7 +57,7 @@ void loop() {
             }
  ```
 
-+ **Function2**  - Runs every 5 seconds. It never expires because it runs too quickly (On an ESP32). When the function completes, the print statement includes an invocation of ___myjobs.delaytime()___ and ___myjobs.runtime()___. This shows how much time (in milliseconds) the function used and how long any execution delay was. Knowing this information can help focus where code function optimisation may be required.
++ **Function2**  - Runs every 5 seconds. It never expires because it runs too quickly (On an ESP32). When the function's for{} loop completes, the print statement that follows includes an invocation of ___delaytime()___ and ___runtime()___. This shows how much time (in milliseconds) the function used and how long any execution delay was. Knowing this information can help focus where code function optimisation may be required.
 
 ```
     void Function2() {
@@ -67,7 +69,7 @@ void loop() {
                                                 myjobs.delaytime(), myjobs.runtime());
     }
 ```
-+ **Funciton3** - Runs after 2 minutes. It includes a call to __myjobs.remove()___ which (obviously) removes itself from the task list. In effect, this makes Function3 a "run once" process. 
++ **Funciton3** - Runs after 2 minutes. It includes a call to ___remove()___ which (obviously) removes itself from the dispatcher link list. In effect, this makes Function3 a "run once" process. 
 
 ```
     void Function3() {
@@ -83,7 +85,7 @@ void loop() {
 ```
 ### Notes
 
-+ This library is intended to provide simplistic __run()__, __add()__, __remove()__, __runtime()__ and __delaytime()__ functions that help simplify complex sketch logic flows. It does not provide any inter-process communications, or support the use of multi-core processing. 
++ This library is intended to provide simplistic __run()__, __add()__, __remove()__, __runtime()__ and __delaytime()__ methods that help simplify complex sketch logic flows. It does not provide any inter-process communications, or support the use of multi-core processing. 
 
 * Process timings are based on calls to millis(). A toggle to call micros() could be added, but as it stands the resolution seems good enough.  
 
