@@ -7,11 +7,11 @@ something that is reliable. I guess for me, much of the time RTOS is overkill fo
 objectives are to read sensors, update some sort of display and maybe read serial data Etc. The problem is, sometimes these tasks block or 
 take an unpredictable length of time to complete. This induces delays with every other action I want to perform and for me, that's often unacceptable.
 
-This simple task dispatcher (Yes, I know similar things have been written before) suits my requirements in a simplistic way. If a sub-task is slow, then it's slow. This won't help with that issue, but it does aid the "catchup" processes in that tardy tasks can be picked up and dealt with as soon as any blocking process relinquishes control. I'm using this in anger and it does seem to level out all the delays in high level function calls and seems to remove any of the reasons for ever calling the delay() function - which we all know, effectively blocks the ability to do anything else. 
+This simple task dispatcher satisfies these requirements in a simplistic way. You define when you want a process to run. If such a task is slow and non re-entrant, then nothing will really help. But, what this dispatcher can do is aid with the catchup process. Tardy tasks can be picked up and dealt with as soon as any blocking process relinquishes control. It effectively flattens the delays on calling other functions. Taking this approach removes many of the reasons for calling delay() - which we all know, effectively blocks out the processor's ability to do anything else. 
 
 ### Method:
 
-+ The dispatcher creates a link list of function pointers. Each entry in the list indicates how long a function should be delayed for prior to execution and how much time the function should be given to execute. These times are specified in milliseconds. Typically, the list creation takes place in startup code using the ___add___ funciton. For example:
++ The dispatcher creates a link list of function pointers. Each entry in the list indicates how long a function should be delayed before execution and how much time the function should be given to execute. These times are specified in milliseconds. Typically, the list creation takes place in startup code using the ___add___ funciton. For example:
 
 ```
 #include <Dispatch.h>
@@ -29,7 +29,7 @@ void setup() {
 
 ```
 
-+ The dispatcher recurses through this link list using its ___run___ method to evaluate how long each function has been waiting. Any function that has an expired wait time will be executed. If more than one function is in this state, the one thats incurred the longest delay will be executed first (This approach helps level out the delays in executing any one function). In an Arduino'esq environment, you would typically place this call inside the sketch main loop so it get's it's cpu cycles along with whatever other calls are being made.
++ The dispatcher recurses through this link list using its ___run___ method to evaluate how long each function has been waiting. Any function that has an expired wait time will be executed. If more than one function is in this state, the one thats incurred the longest delay will be executed first (This approach provides the delay leveling up). In an Arduino'esq environment, you would typically place this call inside the sketch main loop so it get's it's cpu cycles along with whatever other calls are being made.
 
 ```
 void loop() {
@@ -55,7 +55,7 @@ void loop() {
             }
  ```
 
-+ **Function2**  - Runs every 5 seconds. It never expires because it runs too quickly (On an ESP32). When the function completes, the print statement includes an invocation of ___myjobs.delaytime()___ and ___myjobs.runtime()___. This shows how much time (milliseconds) the function used and how long any execution delay was. Knowing this information can help focus where code function optimisation may be required.
++ **Function2**  - Runs every 5 seconds. It never expires because it runs too quickly (On an ESP32). When the function completes, the print statement includes an invocation of ___myjobs.delaytime()___ and ___myjobs.runtime()___. This shows how much time (in milliseconds) the function used and how long any execution delay was. Knowing this information can help focus where code function optimisation may be required.
 
 ```
     void Function2() {
@@ -87,4 +87,4 @@ void loop() {
 
 * Process timings are based on calls to millis(). A toggle to call micros() could be added, but as it stands the resolution seems good enough.  
 
-+ All this code is written in *C* with a *C++* styled "wrapper". I don't do C++ but that seemed to be the only way to use the code within an Arduino IDE environment. There were indications that I could use the compiler extern directive, but I couldn't get past failures in the link stage. If anyone can show me how to do this, then please drop me a line!  
++ All this code is written in *C* with a *C++* styled "wrapper" round it. This seems to be the only way to include a library within an Arduino IDE environment. There were indications that this could be achieved using the compiler extern directive, but I couldn't get past failures in the link stage. If anyone can show me how to do this, then please drop me a line!  
