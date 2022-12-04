@@ -11,7 +11,7 @@ public:
   bool expired();
   unsigned long runtime();
   unsigned long delaytime();
-  private:
+private:
   struct RunTable {
     unsigned long ScheduleInterval;
     unsigned long LastRunTime = 0;
