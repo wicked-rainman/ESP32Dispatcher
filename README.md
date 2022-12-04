@@ -1,5 +1,5 @@
 # ESP32Dispatcher
-## A simple cron-like "time slice" scheduler for ESPs and Arduinos.
+## A simple time slice scheduler for ESPs, Arduinos and the like.
 
 I've had a stab at writing code using RTOS with some success, but every now and then bugs turn up in what I've written and I 
 struggle to resolve where the issues are. I've read much of the RTOS documentation but there seems to be some magic involved in building
