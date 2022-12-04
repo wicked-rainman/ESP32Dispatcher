@@ -74,7 +74,7 @@ Referencing the setup{} and main loop{} as above, the following code snippets sh
                                                 myjobs.delaytime(), myjobs.runtime());
     }
 ```
-   **Funciton3** - Runs after 2 minutes. It includes a call to ___remove()___ which (obviously) removes itself from the dispatcher link list. In effect, this makes Function3 a "run once" process. Just before it completes, Function3 adds Function4 (code not shown) in the link list to be executed 3 minutes later.
+   **Funciton3** - Runs after 2 minutes. It includes a call to ___remove()___ which removes itself from the dispatcher link list. In effect, this makes Function3 a "run once" process. Just before it completes, Function3 adds Function4 (code not shown) in the link list to be executed 3 minutes later.
 
 ```
     void Function3() {
