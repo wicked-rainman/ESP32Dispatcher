@@ -57,7 +57,7 @@ void loop() {
             }
  ```
 
-+ **Function2**  - Runs every 5 seconds. It never expires because it runs too quickly (On an ESP32). When the function's for{} loop completes, the print statement that follows includes an invocation of ___delaytime()___ and ___runtime()___. This shows how much time (in milliseconds) the function used and how long any execution delay was. Knowing this information can help focus where code function optimisation may be required.
++ **Function2**  - Runs every 5 seconds. It never expires because it runs too quickly (On an ESP32). When the function's for{} loop completes, the print statement that follows includes an invocation of ___delaytime()___ and ___runtime()___. This shows how much time (in milliseconds) the function used and how long any execution delay was. Knowing this information can help focus where function code optimisation may be required.
 
 ```
     void Function2() {
