@@ -3,7 +3,7 @@
 
 I've had a stab at writing code using RTOS with some success, but every now and then bugs raise their head in what I've written and I 
 struggle to resolve where the issues are. Having read much of the RTOS documentation, there still seems to be some magical art involved in building
-something that is robust. I guess for me, using such a utility is probably overkill for what I'm trying to achieve, or I'm just plain stupid. 
+something that is robust. I guess for me, using such a utility is probably overkill for what I'm trying to achieve. Either that, or I'm just plain stupid. 
 
 On the most part, my objectives are:
 
