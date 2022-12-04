@@ -3,8 +3,9 @@
 
 I've had a stab at writing code using RTOS with some success, but every now and then bugs raise their head in what I've written and I 
 struggle to resolve where the issues are. Having read much of the RTOS documentation, there still seems to be some magical art involved in building
-something that is robust. I guess for me, using such a utility is probably overkill for what I'm trying to achieve. On the most part, my 
-objectives are:
+something that is robust. I guess for me, using such a utility is probably overkill for what I'm trying to achieve, or I'm just plain stupid. 
+
+On the most part, my objectives are:
 
 + To read values off some sensor(s). 
 + Update some sort of display. 
@@ -12,9 +13,9 @@ objectives are:
 
 The problem is, sometimes these tasks block (For example, serial reading) or take an unpredictable length of time to complete (Perhaps searching for data in a stream). This induces delays with every other action I want to perform and for me, that's often unacceptable.
 
-This task dispatcher satisfies these objectives in a simplistic way. You define when you want a process to run and (optionally) end. If any one task is slow and non re-entrant, then nothing will really help. What this dispatcher will do is aid with any catching up process. Tardy tasks can be picked up and dealt with as soon as any blocking process relinquishes control. It effectively flattens the delays on calling other functions and helps provide a more smooth process flow. Taking this approach removes many of the reasons for calling delay() - which we all know, effectively blocks out the processor's ability to do anything else. 
+This task dispatcher satisfies these objectives in a simplistic way. You define when you want a process to run and (optionally) end. If any one task is slow and non re-entrant, then nothing will really help. What this dispatcher will do is aid with any catching up process. Tardy tasks can be picked up and dealt with as soon as any blocking process relinquishes control. It effectively flattens the delays on calling other functions and helps provide a more smooth process flow. Taking this approach removes many of the reasons for calling delay() - which we all know, effectively blocks out the processor's ability to do anything useful. 
 
-There are pleanty of other "dispatcher" offerings around, but they all seem fairly complicated to use. Although this isn't as feature rich as some, it's simplistic approach may be more suitable in a domestic development scenario.
+There are pleanty of other "dispatcher" offerings around, but they all seem fairly complicated to use. Although this isn't as feature rich as some, it's simplistic approach may be more suitable in a domestic development scenario. I find it adds a rich process flow capability whilst remaining easy to implement.
 
 ### Method:
 
