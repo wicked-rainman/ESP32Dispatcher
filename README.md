@@ -41,7 +41,7 @@ void loop() {
 
 ```
 
-+ Within each dispatched function, calls can be made at suitable points to the dispatch ___expire___ method (If you don't do this, then the dispatcher will let the function run to completion). If the specified lapse time has been exceeded then this method returns a boolean which can be tested and actioned on. Using the main loop as shown above, some simple examples are:
++ Within each dispatched function, calls can be made at suitable points to the dispatch ___expire___ method (If you don't do this, then the dispatcher will let the function run to completion). If the specified lapse time has been exceeded then this method returns a boolean which can be tested and actioned on. Using the main loop{} and setup{} as shown above, some simple examples are:
 
 + **Function1** - Runs every 2 seconds. The for{} loop will always execute for more than 5 milliseconds, so the call to ___myjobs.expire()___ will return true after 5 milliseconds. In this instance, Function1 will return to the dispatcher. Two seconds later, Function1 will be executed again.
 
