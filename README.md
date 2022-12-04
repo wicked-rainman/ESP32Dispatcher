@@ -11,7 +11,7 @@ This simple task dispatcher (Yes, I know similar things have been written before
 
 ### Method:
 
-+ The dispatcher creates a link list of function pointers. Each entry in the list indicates how long a function should be delayed for prior to execution and how much time the function should be given to execute. These times are specified in milliseconds. Typically, the list creation takes place in startup code. For example:
++ The dispatcher creates a link list of function pointers. Each entry in the list indicates how long a function should be delayed for prior to execution and how much time the function should be given to execute. These times are specified in milliseconds. Typically, the list creation takes place in startup code using the ___add___ funciton. For example:
 
 ```
 #include <Dispatch.h>
@@ -29,7 +29,7 @@ void setup() {
 
 ```
 
-+ The dispatcher recurse through this link list during it's ___run___ method to evaluate how long each function has been waiting. Any function that has an expired wait time will be executed. If more than one function is in this expired state, the one that has incurred the longest delay will be executed first. In an Arduino'esq environment, you would typically place this call inside the sketch main loop funciton so it get's it's cpu cycles along with whatever other calls are being made.
++ The dispatcher recurses through this link list using its ___run___ method to evaluate how long each function has been waiting. Any function that has an expired wait time will be executed. If more than one function is in this state, the one thats incurred the longest delay will be executed first (This approach helps level out the delays in executing any one function). In an Arduino'esq environment, you would typically place this call inside the sketch main loop so it get's it's cpu cycles along with whatever other calls are being made.
 
 ```
 void loop() {
@@ -39,7 +39,7 @@ void loop() {
 
 ```
 
-+ Within each dispatched function, make calls at suitable points to the dispatch ___expire___ method (If you don't do this, then the dispatcher will let the function run to completion). If the lapse time is exceeded then the method returns a boolean which can be actioned on. Using the main loop as shown above, some simple examples are:
++ Within each dispatched function, calls should be made at suitable points to the dispatch ___expire___ method (If you don't do this, then the dispatcher will let the function run to completion). If the lapse time has been exceeded then this method returns a boolean which can be tested and actioned on. Using the main loop as shown above, some simple examples are:
 
 + **Function1** - Runs every 2 seconds. The for loop will always execute for more than 5 milliseconds, so the call to ___myjobs.expire()___ will return true after 5 milliseconds. In this instance, Function1 will return to the dispatcher. Two seconds later, Function1 will be executed again.
 
