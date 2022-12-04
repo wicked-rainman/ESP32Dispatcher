@@ -18,7 +18,7 @@ There are pleanty of other "dispatcher" offerings around, but they all seem fair
 
 ### Method:
 
-The dispatcher creates a link list of function pointers. Each entry in the list indicates how long a function should be delayed before execution and how much time the function should be given to execute. These times are specified in milliseconds. Typically, the list creation takes place in startup code using the ___add___ funciton. For example:
+The dispatcher creates a link list of function pointers. Each entry in the list indicates how long a function should be delayed before execution and how much time the function should be given to execute. These times are specified in milliseconds. Typically, the list creation takes place in startup code using the ___add___ funciton, but it can be called anywhere within a sketch. For example:
 
 ```
 #include <Dispatch.h>
@@ -48,7 +48,7 @@ void loop() {
 
 Within each dispatched function, calls can be made at suitable points to the dispatch ___expire___ method (If you don't do this, then the dispatcher will let the function run to completion). If the specified lapse time has been exceeded then this method returns a boolean which can be tested and actioned on. 
 
-Referencing the setup{} and main loop{} as above, the following code snippets show simple examples of these methods in use:
+Referencing the setup{} and main loop{} as above, the following code snippets show simple examples of these methods can be used:
 
 **Function1** - Runs every 2 seconds. The for{} loop will always execute for more than 5 milliseconds, so the call to ___expire()___ will return true after 5 milliseconds. In this instance, Function1 will return to the dispatcher. Two seconds later, Function1 will be executed again.
 ```
@@ -74,7 +74,7 @@ Referencing the setup{} and main loop{} as above, the following code snippets sh
                                                 myjobs.delaytime(), myjobs.runtime());
     }
 ```
-   **Funciton3** - Runs after 2 minutes. It includes a call to ___remove()___ which (obviously) removes itself from the dispatcher link list. In effect, this makes Function3 a "run once" process. 
+   **Funciton3** - Runs after 2 minutes. It includes a call to ___remove()___ which (obviously) removes itself from the dispatcher link list. In effect, this makes Function3 a "run once" process. Just before it completes, Function3 adds Function4 (code not shown) in the link list to be executed 3 minutes later.
 
 ```
     void Function3() {
@@ -85,6 +85,8 @@ Referencing the setup{} and main loop{} as above, the following code snippets sh
         if(k>2) {
             myjobs.remove(Function3);
             Serial.println("Function3 has run and will never be seen again");
+            Serial.println("Instead, we will now run Function4 3 minuites after this\");
+            myjobs.add(Function4,180000,100); //Add Function4 to the list (Code not shown)
         }
     }
 ```
