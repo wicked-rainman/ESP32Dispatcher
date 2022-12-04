@@ -1,0 +1,12 @@
+# Syntax Colouring Map for ESP32Dispatcher
+
+# Data types (KEYWORD1)
+DIspatch	KEYWORD1
+# Methods and Functions (KEYWORD2)
+begin	KEYWORD2
+run KEYWORD2
+add KEYWORD2
+remove KEYWORD2
+expired KEYWORD2
+runtime KEYWORD2
+delaytime KEYWORD2
