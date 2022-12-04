@@ -81,3 +81,10 @@ void loop() {
         }
     }
 ```
+### Notes
+
++ This library is intended to provide simplistic __run()__, __add()__, __remove()__, __runtime()__ and __delaytime()__ functions that help simplify complex sketch logic flows. It does not provide any inter-process communications, or support the use of multi-core processing. 
+
+* Process timings are based on calls to millis(). A toggle to call micros() could be added, but as it stands the resolution seems good enough.  
+
++ All this code is written in *C* with a *C++* styled "wrapper". I don't do C++ but that seemed to be the only way to use the code within an Arduino IDE environment. There were indications that I could use the compiler extern directive, but I couldn't get past failures in the link stage. If anyone can show me how to do this, then please drop me a line!  
