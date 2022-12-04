@@ -49,7 +49,7 @@ void loop() {
 
 Within each dispatched function, calls can be made at suitable points to the dispatch ___expire___ method (If you don't do this, then the dispatcher will let the function run to completion). If the specified lapse time has been exceeded then this method returns a boolean which can be tested and actioned on. 
 
-Referencing the setup{} and main loop{} as above, the following code snippets show simple examples of these methods can be used:
+Referencing the setup{} and main loop{} as above, the following code snippets show simple examples of how these methods can be used:
 
 **Function1** - Runs every 2 seconds. The for{} loop will always execute for more than 5 milliseconds, so the call to ___expire()___ will return true after 5 milliseconds. In this instance, Function1 will return to the dispatcher. Two seconds later, Function1 will be executed again.
 ```
