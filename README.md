@@ -11,15 +11,14 @@ This simple task dispatcher (Yes, I know similar things have been written before
 
 ### Method:
 
-+ Create a link list of function pointers. Each entry in the list indicates how long the function should be delayed for prior to execution and
-how much time the function should be given to execute. These times are specified in milliseconds. Typically, this creation takes place in
-startup code. For example:
++ The dispatcher creates a link list of function pointers. Each entry in the list indicates how long a function should be delayed for prior to execution and how much time the function should be given to execute. These times are specified in milliseconds. Typically, the list creation takes place in startup code. For example:
 
 ```
 #include <Dispatch.h>
 Dispatch myjobs;                       //Create a dispatch instance
+
 void setup() {
-  Serial.begin(115200);               //Set up the serial port Etc
+
   myjobs.add(Function1, 2000,5);      //Add Function1 to the list. 
                                       //Run every 2 seconds, expire after 5Ms
   myjobs.add(Function2, 5000,1000);   //Add Function2 to the list. 
@@ -30,7 +29,7 @@ void setup() {
 
 ```
 
-+ The dispatcher recurse through this link list to evaluate how long each function has been waiting and invokes any function that has an expired wait time. If more than one function is in this expired state, the function that has incurred the longest delay will be executed first. In an Arduino'esq environment, you would typically place the dispatcher call inside the main loop funciton so it get's it's cpu cycles along with whatever other function calls are made within the loop.
++ The dispatcher recurse through this link list during it's ___run___ method to evaluate how long each function has been waiting. Any function that has an expired wait time will be executed. If more than one function is in this expired state, the one that has incurred the longest delay will be executed first. In an Arduino'esq environment, you would typically place this call inside the sketch main loop funciton so it get's it's cpu cycles along with whatever other calls are being made.
 
 ```
 void loop() {
@@ -40,9 +39,9 @@ void loop() {
 
 ```
 
-+ Within each dispatched function, make calls at suitable points to the dispatch expire method (If you don't do this, then the dispatcher will let the function run to completion). If the lapse time is exceeded then the method returns a boolean which can be actioned on. In the main loop above, some examples are:
++ Within each dispatched function, make calls at suitable points to the dispatch ___expire___ method (If you don't do this, then the dispatcher will let the function run to completion). If the lapse time is exceeded then the method returns a boolean which can be actioned on. Using the main loop as shown above, some simple examples are:
 
-**Function1** - Runs every 2 seconds. The for loop will always execute for more than 5 milliseconds, so the call to myjobs.expire() will return true after 5 milliseconds. In this instance, Function1 will return to the dispatcher. Two seconds later, Function1 will be executed again.
++ **Function1** - Runs every 2 seconds. The for loop will always execute for more than 5 milliseconds, so the call to ___myjobs.expire()___ will return true after 5 milliseconds. In this instance, Function1 will return to the dispatcher. Two seconds later, Function1 will be executed again.
 
 ```
             void Function1() {
@@ -56,7 +55,7 @@ void loop() {
             }
  ```
 
-**Function2**  - Runs every 5 seconds. It never expires because it runs too quickly (On an ESP32). When the function completes, the print statement shows how much time (milliseconds) the function used and how long any execution delay was. Knowing this information can help focus where function optomisation may be required.
++ **Function2**  - Runs every 5 seconds. It never expires because it runs too quickly (On an ESP32). When the function completes, the print statement includes an invocation of ___myjobs.delaytime()___ and ___myjobs.runtime()___. This shows how much time (milliseconds) the function used and how long any execution delay was. Knowing this information can help focus where code function optimisation may be required.
 
 ```
     void Function2() {
@@ -68,7 +67,7 @@ void loop() {
                                                 myjobs.delaytime(), myjobs.runtime());
     }
 ```
-**Funciton3** - Runs after 2 minutes then removes itself from the task list. In effect, this makes it a "run once" process. 
++ **Funciton3** - Runs after 2 minutes. It includes a call to __myjobs.remove()___ which (obviously) removes itself from the task list. In effect, this makes Function3 a "run once" process. 
 
 ```
     void Function3() {
