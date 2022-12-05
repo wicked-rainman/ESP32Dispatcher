@@ -93,8 +93,10 @@ Referencing the setup{} and main loop{} as above, the following code snippets sh
 ```
 ### Notes
 
-+ This library is intended to provide simplistic __run()__, __add()__, __remove()__, __runtime()__ and __delaytime()__ methods that help simplify complex sketch logic flows. It does not provide any inter-process communications, or support the use of multi-core processing. 
++ This library is intended to provide simplistic __run()__, __add()__, __remove()__, __runtime()__ and __delaytime()__ methods that help simplify more complex sketch logic flows. It does not provide any inter-process communications, or support the use of multi-core processing. 
 
-* Process timings are based on calls to millis(). A toggle to call micros() could be added, but as it stands the resolution seems good enough.  
+* Process timings are based on calls to millis(). A toggle to call micros() could be added, but as it stands the resolution seems good enough.
+
++ The library depends on calls to the __millis()__ function, so on day 49 all the scheduled tasks will execute immediately during the first itteration after rollover. After that, process delay times will return to those specified.
 
 + All this code is written in *C* with a *C++* styled "wrapper" round it. This seems to be the only way to include a library within an Arduino IDE environment. There were indications that this could be achieved using the compiler extern directive, but I couldn't get past failures in the link stage. If anyone can show me how to do this, then please drop me a line!  
