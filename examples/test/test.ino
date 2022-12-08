@@ -10,7 +10,6 @@
 // Function2 being run by itself.
 //----------------------------------------------------------------------------------
 
-#include <M5Core2.h>
 #include <Dispatch.h>
 Dispatch myjobs;  //Create a dispatch instance
 
