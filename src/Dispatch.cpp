@@ -10,6 +10,7 @@
 // killtime: 	How long the function should run for before being elligible to 
 //           	break out and return
 //
+// Author: WickedRainman
 // ---------------------------------------------------------------------------
 int Dispatch::add(void (*Fptr)(), unsigned long Mdelay, unsigned long killtime) {
 static struct RunTable *_link_ = NULL;
@@ -83,11 +84,9 @@ void Dispatch::remove(void (*Jobptr)()) {
 
 // ---------------------------------------------------------------------------
 // Dispatch run
-//
 // Purpose: 	To cycle through the linklist of functions and to invoke each
 // 		function if the defined time lapse has occurred. The function
 // 		that has been delayed the longest will be invoked first
-//
 // Parameters: None 
 // ---------------------------------------------------------------------------
 
@@ -181,14 +180,11 @@ void Dispatch::run() {
 }
 
 // ----------------------------------------------------------
-//
 // Dispatch expired
 //
 // Purpose:	The test function to decide if the currently 
 // 		function has exhausted it's execution time.
-//
 // Return value: Boolean True of False
-//
 // ----------------------------------------------------------
 bool Dispatch::expired() {
   if (millis() >= _GlobalKillTime_) return true; 
@@ -196,26 +192,22 @@ bool Dispatch::expired() {
 }
 
 // -------------------------------------------------------------
-//
 // Dispatch runtime
 //
 // Purpose: To return how long a function has been running
 //
 // Return value: Run time in milliseconds (Unsigned long int)
-//
 // ------------------------------------------------------------
 unsigned long  Dispatch::runtime() {
   return(millis()-_GlobalStartTime_);
 }	
 
 // ----------------------------------------------------------------
-//
 // Dispatch delaytime
 //
 // Purpose: To return how long a function's execution was delayed
 //
 // Return value: Delay time in milliseconds (Unsigned long int)
-//
 // ----------------------------------------------------------------
 unsigned long Dispatch::delaytime() {
   return(_GlobalOverrunTime_);
