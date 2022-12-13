@@ -100,3 +100,5 @@ Referencing the setup{} and main loop{} as above, the following code snippets sh
 + The library depends on calls to the __millis()__ function, so on day 49 all the scheduled tasks will execute immediately during the first itteration after rollover. After that, process delay times will return to those specified.
 
 + All this code is written in *C* with a *C++* styled "wrapper" round it. This seems to be the only way to include a library within an Arduino IDE environment. There were indications that this could be achieved using the compiler extern directive, but I couldn't get past failures in the link stage. If anyone can show me how to do this, then please drop me a line!  
+
++ I've used these calls in a portable Weather/environment [sensor server](https://wicked-rainman.github.io/projects/M5Station-bat_Sensor_Server). Have a look if you would like to see it being used in anger. 
